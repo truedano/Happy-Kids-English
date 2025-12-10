@@ -1,15 +1,17 @@
+
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { QuizItem, WrongAnswer } from '../types';
+import { QuizItem, WrongAnswer, Subject } from '../types';
 import { playSFX } from '../services/audioService';
 
 interface QuizGameProps {
   questions: QuizItem[];
   onFinish: (score: number, wrongAnswers: WrongAnswer[]) => void;
   onExit: () => void;
+  subject: Subject;
 }
 
-export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit }) => {
+export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit, subject }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -19,10 +21,19 @@ export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit 
   const [shake, setShake] = useState(false);
 
   const currentQ = questions[currentIdx];
+  const isMath = subject === 'MATH';
+  const isWriting = subject === 'WRITING';
+  const shouldSpeak = !isMath && !isWriting;
 
   const handleSpeech = (text: string) => {
+    // Disable speech for Math and Writing
+    if (!shouldSpeak) return;
+
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Replace underscores with "blank" so it reads naturally
+      const spokenText = text.replace(/_+/g, ' blank ');
+      
+      const utterance = new SpeechSynthesisUtterance(spokenText);
       utterance.lang = 'en-US';
       utterance.rate = 0.8; // Slower for kids
       window.speechSynthesis.speak(utterance);
@@ -30,9 +41,11 @@ export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit 
   };
 
   useEffect(() => {
-    // Auto speak question when it loads
-    handleSpeech(questions[currentIdx].question);
-  }, [currentIdx, questions]);
+    // Auto speak question when it loads (ONLY if NOT Math/Writing)
+    if (shouldSpeak) {
+      handleSpeech(questions[currentIdx].question);
+    }
+  }, [currentIdx, questions, shouldSpeak]);
 
   const handleAnswer = (option: string) => {
     if (isAnswered) return;
@@ -105,16 +118,18 @@ export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit 
       <div className={`bg-white rounded-3xl shadow-xl p-8 mb-6 text-center relative overflow-hidden ${shake ? 'animate-shake' : ''}`}>
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-purple-400"></div>
         
-        <h2 className="text-3xl font-bold text-gray-800 mb-4 leading-relaxed">
+        <h2 className={`text-3xl font-bold text-gray-800 mb-4 leading-relaxed ${isMath ? 'font-mono text-4xl' : ''}`}>
           {currentQ.question}
         </h2>
         
-        <button 
-          onClick={() => handleSpeech(currentQ.question)}
-          className="bg-blue-100 text-blue-600 hover:bg-blue-200 px-4 py-2 rounded-full text-sm font-bold mb-4 inline-flex items-center gap-2 transition-colors"
-        >
-          🔊 聽題目 (Listen)
-        </button>
+        {shouldSpeak && (
+          <button 
+            onClick={() => handleSpeech(currentQ.question)}
+            className="bg-blue-100 text-blue-600 hover:bg-blue-200 px-4 py-2 rounded-full text-sm font-bold mb-4 inline-flex items-center gap-2 transition-colors"
+          >
+            🔊 聽題目 (Listen)
+          </button>
+        )}
 
         <p className="text-gray-500 text-lg mb-2 font-medium">
           {currentQ.chineseTranslation}
@@ -146,6 +161,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({ questions, onFinish, onExit 
                 p-6 rounded-2xl text-xl font-bold shadow-sm
                 transition-all duration-200 transform
                 ${!isAnswered && 'hover:scale-[1.02] active:scale-95 active:border-b-0 active:translate-y-1'}
+                ${isMath ? 'font-mono text-2xl' : ''}
               `}
             >
               {option}

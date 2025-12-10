@@ -1,3 +1,4 @@
+
 export enum GradeLevel {
   ONE = 1,
   TWO = 2,
@@ -7,12 +8,14 @@ export enum GradeLevel {
   SIX = 6
 }
 
+export type Subject = 'ENGLISH' | 'MATH' | 'WRITING';
+
 export interface VocabularyItem {
-  word: string; // The English word or phrase
+  word: string; // The English word or phrase OR Math Term OR Writing Technique
   emoji: string; // Visual cue
-  partOfSpeech: string; // (n.) (v.) (adj.)
-  chinese: string; // Chinese meaning
-  exampleSentence: string; // Simple example
+  partOfSpeech: string; // (n.) (v.) OR (Math Concept)
+  chinese: string; // Chinese meaning / Explanation
+  exampleSentence: string; // Simple example / Math Formula example
   exampleTranslation: string; // Translation of example
 }
 
@@ -21,7 +24,7 @@ export interface QuizItem {
   question: string;
   options: string[];
   correctAnswer: string;
-  chineseTranslation: string;
+  chineseTranslation: string; // Or Hint for Math
   explanation: string;
 }
 
@@ -31,19 +34,19 @@ export interface WrongAnswer {
 }
 
 export interface LessonData {
-  topic: string; // e.g., "At the Zoo"
-  chineseTopic: string; // e.g., "在動物園"
+  topic: string; // e.g., "At the Zoo" or "Multiplication"
+  chineseTopic: string; 
   vocabulary: VocabularyItem[];
   quiz: QuizItem[];
 }
 
 export interface AppState {
+  currentSubject: Subject | null; // Track selected subject
   currentGrade: GradeLevel | null;
   lessonData: LessonData | null;
   isLoading: boolean;
-  // Add new game modes here
-  gameStatus: 'MENU' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_SPEAKING' | 'PLAYING' | 'FINISHED';
+  gameStatus: 'MENU' | 'SUBJECT_SELECTION' | 'MATH_TOPIC_SELECTION' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_WORD_SCRAMBLE' | 'GAME_MATH_CHALLENGE' | 'GAME_NUMBER_PUZZLE' | 'GAME_GEOMETRY_BUILDER' | 'GAME_SENTENCE_BUILDER' | 'GAME_IDIOM_DOJO' | 'PLAYING' | 'FINISHED';
   score: number;
   currentQuestionIndex: number;
-  wrongAnswers: WrongAnswer[]; // Store wrong answers for review
+  wrongAnswers: WrongAnswer[]; 
 }

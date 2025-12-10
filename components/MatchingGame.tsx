@@ -1,32 +1,38 @@
+
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { VocabularyItem } from '../types';
+import { VocabularyItem, Subject } from '../types';
 import { playSFX } from '../services/audioService';
 
 interface MatchingGameProps {
   vocabulary: VocabularyItem[];
   onFinish: () => void;
   onExit: () => void;
+  subject: Subject;
 }
 
 interface Card {
   id: string;
   content: string;
-  type: 'word' | 'definition'; // 'word' is English, 'definition' is Emoji+Chinese
+  type: 'word' | 'definition'; // 'word' is English/ChineseConcept, 'definition' is Emoji+Desc/Formula
   vocabIndex: number; // To check matches
   isMatched: boolean;
 }
 
-export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish, onExit }) => {
+export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish, onExit, subject }) => {
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  const isMath = subject === 'MATH';
+  const isWriting = subject === 'WRITING';
+  const shouldSpeak = !isMath && !isWriting; // Only speak for English
 
   // Initialize game
   useEffect(() => {
     const newCards: Card[] = [];
     vocabulary.forEach((vocab, index) => {
-      // Card 1: English Word
+      // Card 1: Main Concept (English for ENG, Chinese for MATH/WRITING)
       newCards.push({
         id: `word-${index}`,
         content: vocab.word,
@@ -34,10 +40,10 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
         vocabIndex: index,
         isMatched: false,
       });
-      // Card 2: Emoji + Chinese
+      // Card 2: Definition (Emoji + Chinese for ENG, Formula for MATH, Example for WRITING)
       newCards.push({
         id: `def-${index}`,
-        content: `${vocab.emoji} ${vocab.chinese}`,
+        content: (isMath || isWriting) ? vocab.exampleSentence : `${vocab.emoji} ${vocab.chinese}`, 
         type: 'definition',
         vocabIndex: index,
         isMatched: false,
@@ -47,7 +53,16 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
     // Shuffle cards
     const shuffled = newCards.sort(() => Math.random() - 0.5);
     setCards(shuffled);
-  }, [vocabulary]);
+  }, [vocabulary, isMath, isWriting]);
+
+  const speak = (text: string) => {
+    if (!text || !shouldSpeak) return;
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
 
   const handleCardClick = (card: Card) => {
     if (isProcessing || card.isMatched || selectedCardId === card.id) return;
@@ -56,7 +71,9 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
     if (!selectedCardId) {
       playSFX('click');
       setSelectedCardId(card.id);
-      speak(card.type === 'word' ? card.content : ''); // Speak if it's the English word
+      if (card.type === 'word') {
+         speak(card.content); 
+      }
       return;
     }
 
@@ -77,7 +94,8 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
         startVelocity: 30,
         gravity: 2,
       });
-      speak("Great!");
+      if (shouldSpeak) speak("Great!");
+      
       setCards(prev => prev.map(c => 
         (c.id === card.id || c.id === prevCard.id) 
           ? { ...c, isMatched: true } 
@@ -92,15 +110,6 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
         setSelectedCardId(null);
         setIsProcessing(false);
       }, 1000);
-    }
-  };
-
-  const speak = (text: string) => {
-    if (!text) return;
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
     }
   };
 
@@ -130,7 +139,10 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
       </div>
 
       <p className="text-center text-gray-500 mb-6">
-        點擊卡片，把英文單字和中文意思配對起來！
+        {isMath 
+          ? '請把「數學概念」和對應的「算式/圖形」連起來！' 
+          : (isWriting ? '請把「寫作技巧」和對應的「範例」連起來！' : '點擊卡片，把英文單字和中文意思配對起來！')
+        }
       </p>
 
       {/* Grid */}
@@ -153,11 +165,14 @@ export const MatchingGame: React.FC<MatchingGameProps> = ({ vocabulary, onFinish
              baseClasses += "bg-white hover:bg-sky-50 hover:-translate-y-1 cursor-pointer text-gray-700 border-b-4 border-gray-200";
           }
 
+          // Use monospaced font for Math formulas or Writing examples for better readability
+          const isSpecialFont = (isMath || isWriting) && card.type === 'definition';
+
           return (
             <button
               key={card.id}
               onClick={() => handleCardClick(card)}
-              className={baseClasses}
+              className={`${baseClasses} ${isSpecialFont ? 'font-mono text-sm md:text-lg' : ''}`}
               disabled={card.isMatched}
             >
               {card.content}

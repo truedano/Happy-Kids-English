@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { VocabularyItem } from '../types';
+import { VocabularyItem, Subject } from '../types';
 import { playSFX } from '../services/audioService';
 
 interface StudyModeProps {
@@ -8,26 +9,38 @@ interface StudyModeProps {
   vocabulary: VocabularyItem[];
   onFinish: () => void;
   onExit: () => void;
+  subject: Subject;
 }
 
-export const StudyMode: React.FC<StudyModeProps> = ({ topic, chineseTopic, vocabulary, onFinish, onExit }) => {
+export const StudyMode: React.FC<StudyModeProps> = ({ topic, chineseTopic, vocabulary, onFinish, onExit, subject }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const currentWord = vocabulary[currentIdx];
+  
+  const isMath = subject === 'MATH';
+  const isWriting = subject === 'WRITING';
+  const shouldSpeak = !isMath && !isWriting; // Only speak for English
 
   const speak = (text: string) => {
+    // Disable speak for Math and Writing
+    if (!shouldSpeak) return;
+
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Replace underscores with "blank"
+      const spokenText = text.replace(/_+/g, ' blank ');
+      const utterance = new SpeechSynthesisUtterance(spokenText);
       utterance.lang = 'en-US';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  // Auto-speak when sliding to a new card
+  // Auto-speak when sliding to a new card (Only if English)
   useEffect(() => {
-    speak(currentWord.word);
-  }, [currentIdx, currentWord]);
+    if (shouldSpeak) {
+      speak(currentWord.word);
+    }
+  }, [currentIdx, currentWord, shouldSpeak]);
 
   const handleNext = () => {
     playSFX('click');
@@ -53,8 +66,10 @@ export const StudyMode: React.FC<StudyModeProps> = ({ topic, chineseTopic, vocab
           ✕ 離開
         </button>
         <div className="text-center">
-          <h2 className="text-sm text-gray-500 font-bold uppercase tracking-wider">Today's Lesson</h2>
-          <div className="text-xl font-bold text-sky-600">{topic} <span className="text-base font-normal text-gray-500">({chineseTopic})</span></div>
+          <h2 className="text-sm text-gray-500 font-bold uppercase tracking-wider">
+            {isMath ? '觀念卡 (Concept)' : (isWriting ? '寫作技巧 (Skill)' : "Today's Lesson")}
+          </h2>
+          <div className="text-xl font-bold text-sky-600">{chineseTopic || topic}</div>
         </div>
         <div className="text-sm font-bold bg-sky-100 text-sky-600 px-3 py-1 rounded-full">
           {currentIdx + 1} / {vocabulary.length}
@@ -64,7 +79,7 @@ export const StudyMode: React.FC<StudyModeProps> = ({ topic, chineseTopic, vocab
       {/* Flashcard */}
       <div className="bg-white rounded-[2rem] shadow-xl overflow-hidden border-b-8 border-sky-100 mb-8 transform transition-all">
         {/* Visual Header */}
-        <div className="bg-sky-50 p-8 flex justify-center items-center h-48 relative">
+        <div className={`p-8 flex justify-center items-center h-48 relative ${isMath ? 'bg-blue-50' : (isWriting ? 'bg-pink-50' : 'bg-sky-50')}`}>
            <div className="absolute top-4 right-4 text-sky-200 text-6xl opacity-20 font-black">
              {currentIdx + 1}
            </div>
@@ -76,37 +91,56 @@ export const StudyMode: React.FC<StudyModeProps> = ({ topic, chineseTopic, vocab
         {/* Content */}
         <div className="p-8 text-center space-y-6">
           
-          {/* Word & Pronunciation */}
+          {/* Main Word / Concept */}
           <div className="flex flex-col items-center gap-2">
-            <h1 className="text-5xl font-black text-gray-800 tracking-tight">{currentWord.word}</h1>
+            <h1 className="text-5xl font-black text-gray-800 tracking-tight">
+              {currentWord.word}
+            </h1>
+            
             <div className="flex items-center gap-2">
-              <span className="text-gray-400 font-serif italic text-lg">{currentWord.partOfSpeech}</span>
-              <button 
-                onClick={() => speak(currentWord.word)}
-                className="bg-primary hover:bg-yellow-400 text-yellow-900 rounded-full p-2 transition-transform hover:scale-110 active:scale-95 shadow-sm"
-                aria-label="Play pronunciation"
-              >
-                🔊
-              </button>
+              <span className="text-gray-400 font-serif italic text-lg">
+                {isMath ? '觀念' : (isWriting ? '技巧' : currentWord.partOfSpeech)}
+              </span>
+              {shouldSpeak && (
+                <button 
+                  onClick={() => speak(currentWord.word)}
+                  className="bg-primary hover:bg-yellow-400 text-yellow-900 rounded-full p-2 transition-transform hover:scale-110 active:scale-95 shadow-sm"
+                  aria-label="Play pronunciation"
+                >
+                  🔊
+                </button>
+              )}
             </div>
-            <p className="text-2xl text-gray-600 font-medium mt-1">{currentWord.chinese}</p>
+            {/* Definition */}
+            <p className="text-xl text-gray-600 font-medium mt-1">
+              {currentWord.chinese}
+            </p>
           </div>
 
           <div className="w-full h-px bg-gray-100"></div>
 
-          {/* Sentence */}
-          <div className="bg-gray-50 rounded-xl p-4 text-left border border-gray-100">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Example</span>
-              <button onClick={() => speak(currentWord.exampleSentence)} className="text-sky-500 hover:text-sky-600 text-sm font-bold">
-                🔊 Listen
-              </button>
+          {/* Detailed Explanation / Formula */}
+          <div className={`bg-gray-50 rounded-xl p-4 text-left border border-gray-100 ${isMath || isWriting ? 'text-center' : ''}`}>
+            <div className={`flex items-start mb-2 ${isMath || isWriting ? 'justify-center' : 'justify-between'}`}>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                {isMath ? '公式/重點 (Formula)' : (isWriting ? '範例 (Example)' : 'Example')}
+              </span>
+              {shouldSpeak && (
+                <button onClick={() => speak(currentWord.exampleSentence)} className="text-sky-500 hover:text-sky-600 text-sm font-bold">
+                  🔊 Listen
+                </button>
+              )}
             </div>
-            <p className="text-lg text-gray-800 font-medium leading-relaxed mb-1">
+            
+            {/* The Formula or Example Sentence */}
+            <p className={`text-2xl text-gray-800 font-bold leading-relaxed mb-3 ${isMath ? 'font-mono text-blue-600' : ''}`}>
               {currentWord.exampleSentence}
             </p>
-            <p className="text-gray-500">
-              {currentWord.exampleTranslation}
+            
+            {/* The Step-by-Step Logic or Translation */}
+            <p className={`text-gray-500 ${isMath || isWriting ? 'text-left bg-white p-3 rounded-lg text-sm border border-gray-100' : ''}`}>
+               {(isMath || isWriting) && <span className="block font-bold text-xs text-blue-400 mb-1">💡 小撇步/解析 (Tip):</span>}
+               {currentWord.exampleTranslation}
             </p>
           </div>
         </div>
