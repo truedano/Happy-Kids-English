@@ -32,7 +32,7 @@ const INITIAL_STATE: AppState = {
 export default function App() {
   const [state, setState] = useState<AppState>(INITIAL_STATE);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [questionCount, setQuestionCount] = useState<number>(5); 
+  const [questionCount, setQuestionCount] = useState<number>(10); 
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>(undefined); // Track selected topic
 
   const handleSubjectSelect = (subject: Subject) => {
@@ -287,7 +287,7 @@ export default function App() {
                 題目數量 (Number of Questions)
               </label>
               <div className="flex bg-white p-1.5 rounded-2xl shadow-md border border-gray-100">
-                {[3, 5, 8, 10].map(count => (
+                {[5, 10, 15, 20].map(count => (
                   <button
                     key={count}
                     onClick={() => { playSFX('click'); setQuestionCount(count); }}
@@ -557,10 +557,14 @@ export default function App() {
                 主題：{state.lessonData.chineseTopic}
               </p>
               
-              <div className="bg-sky-50 rounded-2xl p-6 mb-8">
-                <div className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">Score</div>
-                <div className="text-6xl font-black text-sky-500 drop-shadow-sm">
-                  {state.score} / {state.lessonData.quiz.length}
+              <div className="bg-sky-50 rounded-2xl p-6 mb-8 flex flex-col items-center">
+                <div className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2">總分 (Final Score)</div>
+                <div className="text-8xl font-black text-primary drop-shadow-sm mb-4">
+                  {Math.round((state.score / state.lessonData.quiz.length) * 100)}
+                  <span className="text-4xl ml-2">分</span>
+                </div>
+                <div className="text-2xl font-bold text-sky-600 bg-white inline-block px-6 py-2 rounded-full shadow-sm border border-sky-100">
+                  答對 {state.score} / {state.lessonData.quiz.length} 題
                 </div>
               </div>
 
