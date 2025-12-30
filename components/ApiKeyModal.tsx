@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getApiKeyPool, validateApiKeyFormat } from '../services/apiKeyManager';
+import { GEMINI_MODEL } from '../services/geminiService';
 
 interface ApiKeyModalProps {
     onSave: (apiKeys: string[]) => void;
@@ -71,7 +72,6 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onSave, onClose, isOpe
 
         try {
             const { GoogleGenAI } = await import('@google/genai');
-            const { GEMINI_MODEL } = await import('../services/geminiService');
             const invalidIndices: number[] = [];
 
             // 逐一測試所有金鑰

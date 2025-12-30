@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { validateApiKeyFormat } from '../services/apiKeyManager';
+import { GEMINI_MODEL } from '../services/geminiService';
 
 interface ApiKeySettingsProps {
     apiKeys: string[];
@@ -40,7 +41,6 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = ({
         setIsValidating(true);
         try {
             const { GoogleGenAI } = await import('@google/genai');
-            const { GEMINI_MODEL } = await import('../services/geminiService');
             const testClient = new GoogleGenAI({ apiKey: key });
 
             // 使用導出的常數進行驗證
