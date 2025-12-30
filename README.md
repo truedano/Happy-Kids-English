@@ -13,6 +13,13 @@
 - 🔒 **隱私優先**：API Key 只儲存在您的瀏覽器本機
 - 💰 **完全免費**：使用您自己的 Google Gemini API 免費配額
 
+## 🌐 線上 Demo
+
+**立即體驗:** [https://truedano.github.io/Happy-Kids-English/](https://truedano.github.io/Happy-Kids-English/)
+
+> 💡 首次使用需要設定您自己的 Gemini API Key(免費申請)
+
+
 ## 🚀 快速開始
 
 ### 前置需求
@@ -62,6 +69,18 @@
 - **AI 服務**：Google Gemini API
 - **樣式**：Tailwind CSS
 - **建置工具**：Vite
+
+## 🚀 部署到 GitHub Pages
+
+本專案已配置好 GitHub Actions 自動部署流程。詳細步驟請參考:
+👉 **[部署指南 (DEPLOYMENT_GUIDE.md)](./DEPLOYMENT_GUIDE.md)**
+
+快速部署:
+1. 推送程式碼到 GitHub
+2. 在 Settings > Pages 中選擇 "GitHub Actions"
+3. 等待自動建置完成
+4. 訪問 `https://YOUR_USERNAME.github.io/Happy-Kids-English/`
+
 
 ## 📝 授權
 
