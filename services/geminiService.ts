@@ -1,25 +1,26 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import { GradeLevel, LessonData, Subject } from "../types";
+import { getStoredApiKey } from "./apiKeyManager";
 
 const getGeminiClient = () => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = getStoredApiKey();
   if (!apiKey) {
-    console.error("API Key is missing!");
+    throw new Error("API Key 未設定，請先在設定中輸入您的 Gemini API Key");
   }
-  return new GoogleGenAI({ apiKey: apiKey || '' });
+  return new GoogleGenAI({ apiKey });
 };
 
 export const generateLessonForGrade = async (
-  grade: GradeLevel, 
-  subject: Subject, 
+  grade: GradeLevel,
+  subject: Subject,
   questionCount: number = 5,
   specificTopic?: string
 ): Promise<LessonData | null> => {
   const ai = getGeminiClient();
 
   let subjectPrompt = "";
-  
+
   // Randomness directive to be included in all prompts
   const randomnessDirective = "IMPORTANT: Every time this request is made, you MUST generate a UNIQUE set of items. Do not repeat the same words, examples, or questions from previous iterations of this topic. Be creative and vary the content extensively.";
 
@@ -33,9 +34,9 @@ export const generateLessonForGrade = async (
     let themeInstruction = "";
 
     if (!selectedTopic || selectedTopic === "Surprise Me") {
-        themeInstruction = `Task: First, invent a creative, fun, and engaging theme suitable for Grade ${grade} kids. Then create the lesson based on that theme.`;
+      themeInstruction = `Task: First, invent a creative, fun, and engaging theme suitable for Grade ${grade} kids. Then create the lesson based on that theme.`;
     } else {
-        themeInstruction = `Scenario/Theme: "${selectedTopic}".`;
+      themeInstruction = `Scenario/Theme: "${selectedTopic}".`;
     }
 
     subjectPrompt = `
@@ -51,9 +52,9 @@ export const generateLessonForGrade = async (
   } else if (subject === 'MATH') {
     let mathTopic = specificTopic || "";
     if (!mathTopic) {
-        if (grade <= 2) mathTopic = "100以內的加減法, 認識圖形";
-        else if (grade <= 4) mathTopic = "九九乘法表, 除法基礎, 分數";
-        else mathTopic = "小數運算, 因數與倍數, 幾何圖形";
+      if (grade <= 2) mathTopic = "100以內的加減法, 認識圖形";
+      else if (grade <= 4) mathTopic = "九九乘法表, 除法基礎, 分數";
+      else mathTopic = "小數運算, 因數與倍數, 幾何圖形";
     }
 
     subjectPrompt = `
