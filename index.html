@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Kids English</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'primary': '#FFC107', // Amber
-              'secondary': '#4ECDC4', // Teal
-              'accent': '#FF6B6B', // Red-ish
-              'kids-blue': '#45B7D1',
-              'kids-green': '#96E6A1',
-            },
-            fontFamily: {
-              sans: ['"Comic Sans MS"', '"Chalkboard SE"', 'sans-serif'],
-            },
-            animation: {
-              'bounce-slow': 'bounce 3s infinite',
-              'wiggle': 'wiggle 0.5s ease-in-out',
-              'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-              'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-            },
-            keyframes: {
-              wiggle: {
-                '0%, 100%': { transform: 'rotate(-3deg)' },
-                '50%': { transform: 'rotate(3deg)' },
-              },
-              shake: {
-                '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-                '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-                '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-                '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-              },
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
-            }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Happy Kids English - 快樂小學堂 | AI 驅動的互動式學習應用,支援英語、數學、寫作、自然科學四大科目,專為小學生設計" />
+  <meta name="keywords" content="英語學習,數學,寫作,自然科學,小學教育,AI學習,Gemini,互動遊戲" />
+  <meta name="author" content="Happy Kids English" />
+
+  <title>Happy Kids English v1.0.0 - 快樂小學堂</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#FFC107', // Amber
+            'secondary': '#4ECDC4', // Teal
+            'accent': '#FF6B6B', // Red-ish
+            'kids-blue': '#45B7D1',
+            'kids-green': '#96E6A1',
           },
+          fontFamily: {
+            sans: ['"Comic Sans MS"', '"Chalkboard SE"', 'sans-serif'],
+          },
+          animation: {
+            'bounce-slow': 'bounce 3s infinite',
+            'wiggle': 'wiggle 0.5s ease-in-out',
+            'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            shake: {
+              '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+              '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+              '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+              '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
         },
-      }
-    </script>
-    <style>
-      /* Custom scrollbar for a cleaner look */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #888; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555; 
-      }
-    </style>
+      },
+    }
+  </script>
+  <style>
+    /* Custom scrollbar for a cleaner look */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -73,8 +87,10 @@
 }
 </script>
 </head>
-  <body class="bg-sky-50 text-gray-800">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body class="bg-sky-50 text-gray-800">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
