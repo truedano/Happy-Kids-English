@@ -132,12 +132,7 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = ({
                                         <span>➕</span>
                                         <span>新增金鑰</span>
                                     </button>
-                                    <button
-                                        onClick={() => setShowKeys(!showKeys)}
-                                        className="w-full text-gray-400 py-2 rounded-xl text-xs font-bold hover:text-gray-600 transition-all"
-                                    >
-                                        {showKeys ? '🙈 隱藏金鑰內容' : '👁️ 顯示金鑰內容'}
-                                    </button>
+
                                     {apiKeys.length > 0 && (
                                         <button
                                             onClick={handleClear}

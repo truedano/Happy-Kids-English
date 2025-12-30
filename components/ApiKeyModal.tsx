@@ -141,12 +141,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onSave, onClose, isOpe
                         <label className="text-sm font-bold text-gray-700">
                             已儲存的金鑰池 ({keyPool.length})
                         </label>
-                        <button
-                            onClick={() => setShowKeys(!showKeys)}
-                            className="text-xs text-sky-600 font-bold hover:underline"
-                        >
-                            {showKeys ? '隱藏金鑰' : '顯示完整金鑰'}
-                        </button>
+
                     </div>
                     <div className="max-h-40 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                         {keyPool.length === 0 ? (

@@ -1,11 +1,11 @@
-/**
- * API Key 管理工具
- * 負責 localStorage 的讀寫操作與輪詢邏輯
- */
+import CryptoJS from 'crypto-js';
 
 const API_KEY_SINGLE_KEY = 'happy_kids_gemini_api_key'; // 舊有的單一金鑰索引
 const API_KEYS_POOL_KEY = 'happy_kids_gemini_api_keys_pool'; // 金鑰池索引
 const API_KEY_INDEX_KEY = 'happy_kids_gemini_api_key_index'; // 目前輪轉到的索引
+
+// 加密使用的內部密鑰
+const SECRET_KEY = 'happy-kids-learning-app-secure-salt';
 
 /**
  * 從 localStorage 讀取金鑰池
@@ -14,8 +14,28 @@ export const getApiKeyPool = (): string[] => {
     try {
         const pool = localStorage.getItem(API_KEYS_POOL_KEY);
         if (pool) {
-            const parsed = JSON.parse(pool);
-            return Array.isArray(parsed) ? parsed : [];
+            // 嘗試解密
+            try {
+                const bytes = CryptoJS.AES.decrypt(pool, SECRET_KEY);
+                const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+
+                if (decryptedData) {
+                    const parsed = JSON.parse(decryptedData);
+                    return Array.isArray(parsed) ? parsed : [];
+                }
+            } catch (decryptionError) {
+                // 如果解密失敗，可能是舊的未加密格式，嘗試直接解析
+                try {
+                    const parsed = JSON.parse(pool);
+                    if (Array.isArray(parsed)) {
+                        // 遷移：解析成功後立即加密儲存
+                        saveApiKeyPool(parsed);
+                        return parsed;
+                    }
+                } catch (parseError) {
+                    // 解析也失敗，忽略
+                }
+            }
         }
 
         // 向下相容：檢查是否有舊的單一金鑰
@@ -39,7 +59,10 @@ export const getApiKeyPool = (): string[] => {
  */
 export const saveApiKeyPool = (pool: string[]): boolean => {
     try {
-        localStorage.setItem(API_KEYS_POOL_KEY, JSON.stringify(pool));
+        // 將池子序列化後加密
+        const jsonStr = JSON.stringify(pool);
+        const encrypted = CryptoJS.AES.encrypt(jsonStr, SECRET_KEY).toString();
+        localStorage.setItem(API_KEYS_POOL_KEY, encrypted);
         return true;
     } catch (error) {
         console.error('儲存 API Key 池失敗:', error);
