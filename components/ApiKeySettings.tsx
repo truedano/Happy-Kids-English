@@ -17,14 +17,47 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = ({
     const [newApiKey, setNewApiKey] = useState('');
     const [isAdding, setIsAdding] = useState(false);
 
-    const handleAdd = () => {
+    const [isValidating, setIsValidating] = useState(false);
+
+    const handleAdd = async () => {
         const key = newApiKey.trim();
-        if (key && validateApiKeyFormat(key).valid) {
-            if (!apiKeys.includes(key)) {
-                onUpdate([...apiKeys, key]);
-            }
+        const validation = validateApiKeyFormat(key);
+
+        if (!key) return;
+
+        if (!validation.valid) {
+            alert(validation.error || '金鑰格式不正確');
+            return;
+        }
+
+        if (apiKeys.includes(key)) {
+            alert('此金鑰已在清單中');
             setNewApiKey('');
             setIsAdding(false);
+            return;
+        }
+
+        setIsValidating(true);
+        try {
+            const { GoogleGenAI } = await import('@google/genai');
+            const { GEMINI_MODEL } = await import('../services/geminiService');
+            const testClient = new GoogleGenAI({ apiKey: key });
+
+            // 使用導出的常數進行驗證
+            await testClient.models.generateContent({
+                model: GEMINI_MODEL,
+                contents: 'test',
+            });
+
+            // 驗證成功才加入
+            onUpdate([...apiKeys, key]);
+            setNewApiKey('');
+            setIsAdding(false);
+        } catch (err: any) {
+            console.error('API Key 驗證失敗:', err);
+            alert('❌ 金鑰驗證失敗：此金鑰無效或配額已滿');
+        } finally {
+            setIsValidating(false);
         }
     };
 
@@ -110,10 +143,10 @@ export const ApiKeySettings: React.FC<ApiKeySettingsProps> = ({
                                     <div className="flex gap-2">
                                         <button
                                             onClick={handleAdd}
-                                            disabled={!newApiKey.trim()}
+                                            disabled={!newApiKey.trim() || isValidating}
                                             className="flex-1 bg-sky-500 text-white py-2 rounded-xl font-bold text-xs hover:bg-sky-600 transition-all disabled:opacity-50"
                                         >
-                                            確定新增
+                                            {isValidating ? '驗證中...' : '確定新增'}
                                         </button>
                                         <button
                                             onClick={() => { setIsAdding(false); setNewApiKey(''); }}

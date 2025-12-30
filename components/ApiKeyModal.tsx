@@ -70,21 +70,35 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onSave, onClose, isOpe
         setError(null);
 
         try {
-            // 測試第一組金鑰作為基本驗證
             const { GoogleGenAI } = await import('@google/genai');
-            const testClient = new GoogleGenAI({ apiKey: keyPool[0] });
+            const { GEMINI_MODEL } = await import('../services/geminiService');
+            const invalidIndices: number[] = [];
 
-            await testClient.models.generateContent({
-                model: 'gemini-3-flash-preview', // 使用穩定版進行驗證
-                contents: 'test',
-            });
+            // 逐一測試所有金鑰
+            for (let i = 0; i < keyPool.length; i++) {
+                try {
+                    const testClient = new GoogleGenAI({ apiKey: keyPool[i] });
+                    // 使用導出的常數進行驗證
+                    await testClient.models.generateContent({
+                        model: GEMINI_MODEL,
+                        contents: 'test',
+                    });
+                } catch (err: any) {
+                    console.error(`第 ${i + 1} 組金鑰驗證失敗:`, err);
+                    invalidIndices.push(i + 1);
+                }
+            }
 
-            // 驗證成功，儲存所有金鑰
-            onSave(keyPool);
-            setError(null);
+            if (invalidIndices.length > 0) {
+                setError(`❌ 驗證失敗：第 ${invalidIndices.join(', ')} 組金鑰無效或配額問題，請修正或移除後再儲存。`);
+            } else {
+                // 全部通過驗證，儲存所有金鑰
+                onSave(keyPool);
+                setError(null);
+            }
         } catch (err: any) {
-            console.error('API Key 驗證失敗:', err);
-            setError('❌ 驗證失敗：首組金鑰無效或配額問題');
+            console.error('API Key 驗證過程發生錯誤:', err);
+            setError('❌ 驗證過程中發生非預期錯誤，請稍後再試');
         } finally {
             setIsValidating(false);
         }

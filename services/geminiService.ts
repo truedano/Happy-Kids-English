@@ -3,6 +3,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { GradeLevel, LessonData, Subject } from "../types";
 import { getStoredApiKey } from "./apiKeyManager";
 
+export const GEMINI_MODEL = 'gemini-3-flash-preview';
+
 const getGeminiClient = () => {
   const apiKey = getStoredApiKey();
   if (!apiKey) {
@@ -121,7 +123,7 @@ export const generateLessonForGrade = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: GEMINI_MODEL,
       contents: prompt,
       config: {
         temperature: 1.0, // Maximum randomness for creative variety
