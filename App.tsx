@@ -202,7 +202,12 @@ export default function App() {
             <span className="text-3xl">🎓</span>
             <div className="flex flex-col">
               <h1 className="text-xl font-bold text-gray-800 leading-none text-nowrap">Happy Kids</h1>
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Learning App</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Learning App</span>
+                <span className="text-[8px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded-md border border-gray-200 font-mono font-black scale-90 origin-left">
+                  V1.1.0
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
