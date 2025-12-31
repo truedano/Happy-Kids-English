@@ -1,21 +1,22 @@
 # Happy Kids English - 快樂小學堂 🎓
 
-[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](https://github.com/truedano/Happy-Kids-English)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/truedano/Happy-Kids-English)
 [![License](https://img.shields.io/badge/license-Open%20Source-green.svg)](https://github.com/truedano/Happy-Kids-English)
 [![React](https://img.shields.io/badge/React-19.2.0-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2.0-646cff.svg)](https://vitejs.dev/)
 
-> **版本**: 1.3.0 | **最後更新**: 2025-12-30 | **狀態**: ✅ 已部署到 GitHub Pages
+> **版本**: 1.4.0 | **最後更新**: 2025-12-31 | **狀態**: ✅ 已部署到 GitHub Pages
 
-一個互動式、AI 驅動的學習應用程式,專為小學生(1-6 年級)設計,支援英語、數學、寫作和自然科學四大科目。
+一個互動式、AI 驅動的學習應用程式,專為小學生(1-6 年級)設計,支援英語、數學、寫作、自然科學、理財及 AI 智慧六大科目。
 
 ## ✨ 特色功能
 
 ### 🎯 核心功能
 - 🤖 **AI 生成內容**: 使用 Google Gemini AI 動態生成適齡教學內容
 - 🔄 **API Key 輪詢 (Round Robin)**: 支援多組 API Key 自動輪替，分散配額壓力
-- 🎮 **多樣化遊戲**: 連連看、拼字、數學挑戰等多種互動遊戲
+- 🎮 **多樣化遊戲**: 連連看、拼字、數學挑戰、科學分類等 15+ 種互動遊戲
+- ✍️ **自訂主題**: 支援使用者自行輸入想學習的主題，由 AI 即時生成教材
 - 🔒 **隱私與安全**: API Key 採 AES 加密儲存於瀏覽器本機，且不支援介面明文顯示
 - 💰 **完全免費**: 使用您自己的 Google Gemini API 免費配額
 
@@ -50,6 +51,24 @@
   - 🧪 分類大挑戰 - 科學分類練習
   - 🌱 流程排序王 - 科學過程排序
 - **主題範圍**: 生活科學、磁鐵與電、簡單機械
+
+#### 💰 理財 (Finance) 🆕
+- **學習模式**: 財商概念、儲蓄觀念、消費選擇
+- **遊戲模式**: 連連看、測驗挑戰
+- **主題範圍**: 認識金錢、儲蓄觀念、消費選擇、利息與投資風險
+- **分級設計**: 
+  - 低年級：錢幣認識與儲蓄基礎
+  - 中年級：智慧消費與銀行觀念
+  - 高年級：預算管理與投資風險
+
+#### 🤖 AI 智慧 (AI) 🆕
+- **學習模式**: AI 概念、原理解說、倫理思考
+- **遊戲模式**: 連連看、測驗挑戰
+- **主題範圍**: AI 生活應用、機器學習原理、生成式 AI、科技倫理
+- **分級設計**:
+  - 低年級：生活中的 AI 發現
+  - 中年級：機器學習與辨識原理
+  - 高年級：生成式 AI 與科技倫理
 
 ### 🎨 使用者體驗
 - 🎵 **音效回饋**: 互動音效增強學習樂趣
@@ -210,6 +229,11 @@ Happy-Kids-English/
 ## 📊 專案狀態
 
 ### 版本歷程
+- **v1.4.0** (2025-12-31)
+  - 🤖 新增 **AI 智慧 (AI)** 課程：分年級探討 AI 原理、應用與倫理
+  - 💰 新增 **理財 (Finance)** 課程：建立兒童財商教育基礎
+  - ✍️ 新增 **自訂主題功能**：全科目支援使用者自行輸入主題，AI 即時生成客製化教材
+  - 🎨 調整首頁佈局：改為 6 科目 2x3 網格設計
 - **v1.3.0** (2025-12-30)
   - ✅ 新增 **API Key 嚴格驗證機制**：儲存金鑰池前將逐一進行連線測試，確保每一組金鑰均可正常運作
   - 🔍 強化單一金鑰新增檢查：新增金鑰時立即點擊驗證，避免無效金鑰進入池中
@@ -232,8 +256,8 @@ Happy-Kids-English/
   - ✅ API Key 管理系統
 
 ### 功能統計
-- 📚 **科目數量**: 4 (英語、數學、寫作、自然)
-- 🎮 **遊戲模式**: 12+
+- 📚 **科目數量**: 6 (英語、數學、寫作、自然、理財、AI 智慧)
+- 🎮 **遊戲模式**: 15+
 - 📝 **年級支援**: 1-6 年級
 - 🎯 **題目數量**: 可自訂 (5/10/20 題)
 - 🌍 **語言**: 繁體中文 + 英文
@@ -296,6 +320,6 @@ Happy-Kids-English/
 [![GitHub stars](https://img.shields.io/github/stars/truedano/Happy-Kids-English?style=social)](https://github.com/truedano/Happy-Kids-English/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/truedano/Happy-Kids-English?style=social)](https://github.com/truedano/Happy-Kids-English/network/members)
 
-**版本 1.3.0** | © 2025 Happy Kids English | [線上體驗](https://truedano.github.io/Happy-Kids-English/)
+**版本 1.4.0** | © 2025 Happy Kids English | [線上體驗](https://truedano.github.io/Happy-Kids-English/)
 
 </div>
