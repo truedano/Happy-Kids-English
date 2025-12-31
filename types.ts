@@ -8,12 +8,12 @@ export enum GradeLevel {
   SIX = 6
 }
 
-export type Subject = 'ENGLISH' | 'MATH' | 'WRITING' | 'SCIENCE' | 'FINANCE';
+export type Subject = 'ENGLISH' | 'MATH' | 'WRITING' | 'SCIENCE' | 'FINANCE' | 'AI';
 
 export interface VocabularyItem {
-  word: string; // The English word OR Math Term OR Writing Technique OR Scientific Concept OR Finance Concept
+  word: string; // The English word OR Math Term OR Writing Technique OR Scientific Concept OR Finance Concept OR AI Concept
   emoji: string; // Visual cue
-  partOfSpeech: string; // (n.) (v.) OR (Math Category) OR (Scientific Category/Principle) OR (Finance Category)
+  partOfSpeech: string; // (n.) (v.) OR (Math Category) OR (Scientific Category/Principle) OR (Finance Category) OR (AI Category)
   chinese: string; // Chinese meaning / Explanation
   exampleSentence: string; // Simple example / Formula / Experiment outcome
   exampleTranslation: string; // Translation / Detailed explanation
@@ -45,7 +45,7 @@ export interface AppState {
   currentGrade: GradeLevel | null;
   lessonData: LessonData | null;
   isLoading: boolean;
-  gameStatus: 'MENU' | 'SUBJECT_SELECTION' | 'MATH_TOPIC_SELECTION' | 'ENGLISH_TOPIC_SELECTION' | 'WRITING_TOPIC_SELECTION' | 'SCIENCE_TOPIC_SELECTION' | 'FINANCE_TOPIC_SELECTION' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_WORD_SCRAMBLE' | 'GAME_MATH_CHALLENGE' | 'GAME_NUMBER_PUZZLE' | 'GAME_GEOMETRY_BUILDER' | 'GAME_SENTENCE_BUILDER' | 'GAME_IDIOM_DOJO' | 'GAME_SCIENCE_SORT' | 'GAME_SCIENCE_CYCLE' | 'PLAYING' | 'FINISHED';
+  gameStatus: 'MENU' | 'SUBJECT_SELECTION' | 'MATH_TOPIC_SELECTION' | 'ENGLISH_TOPIC_SELECTION' | 'WRITING_TOPIC_SELECTION' | 'SCIENCE_TOPIC_SELECTION' | 'FINANCE_TOPIC_SELECTION' | 'AI_TOPIC_SELECTION' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_WORD_SCRAMBLE' | 'GAME_MATH_CHALLENGE' | 'GAME_NUMBER_PUZZLE' | 'GAME_GEOMETRY_BUILDER' | 'GAME_SENTENCE_BUILDER' | 'GAME_IDIOM_DOJO' | 'GAME_SCIENCE_SORT' | 'GAME_SCIENCE_CYCLE' | 'PLAYING' | 'FINISHED';
   score: number;
   currentQuestionIndex: number;
   wrongAnswers: WrongAnswer[];

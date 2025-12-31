@@ -20,6 +20,7 @@ import { EnglishTopicSelection } from './components/EnglishTopicSelection';
 import { WritingTopicSelection } from './components/WritingTopicSelection';
 import { ScienceTopicSelection } from './components/ScienceTopicSelection';
 import { FinanceTopicSelection } from './components/FinanceTopicSelection';
+import { AITopicSelection } from './components/AITopicSelection';
 import { ApiKeyModal } from './components/ApiKeyModal';
 import { ApiKeySettings } from './components/ApiKeySettings';
 import { generateLessonForGrade } from './services/geminiService';
@@ -97,7 +98,10 @@ export default function App() {
       setState(prev => ({ ...prev, currentGrade: grade, gameStatus: 'SCIENCE_TOPIC_SELECTION' }));
     } else if (state.currentSubject === 'FINANCE') {
       setState(prev => ({ ...prev, currentGrade: grade, gameStatus: 'FINANCE_TOPIC_SELECTION' }));
+    } else if (state.currentSubject === 'AI') {
+      setState(prev => ({ ...prev, currentGrade: grade, gameStatus: 'AI_TOPIC_SELECTION' }));
     }
+
   };
 
   const handleMathTopicSelect = (topic: string) => generateLesson(state.currentGrade!, 'MATH', topic);
@@ -105,6 +109,8 @@ export default function App() {
   const handleWritingTopicSelect = (topic: string) => generateLesson(state.currentGrade!, 'WRITING', topic);
   const handleScienceTopicSelect = (topic: string) => generateLesson(state.currentGrade!, 'SCIENCE', topic);
   const handleFinanceTopicSelect = (topic: string) => generateLesson(state.currentGrade!, 'FINANCE', topic);
+  const handleAITopicSelect = (topic: string) => generateLesson(state.currentGrade!, 'AI', topic);
+
 
   const generateLesson = async (grade: GradeLevel, subject: Subject, topic?: string) => {
     // 檢查 API Key 池
@@ -183,6 +189,7 @@ export default function App() {
       case 'WRITING': return { color: 'text-pink-600', bg: 'bg-pink-50', icon: '📝', name: '寫作 Writing' };
       case 'SCIENCE': return { color: 'text-green-600', bg: 'bg-green-50', icon: '🔬', name: '自然 Science' };
       case 'FINANCE': return { color: 'text-amber-600', bg: 'bg-amber-50', icon: '💰', name: '理財 Finance' };
+      case 'AI': return { color: 'text-indigo-600', bg: 'bg-indigo-50', icon: '🤖', name: 'AI 智慧 AI' };
       default: return { color: 'text-teal-600', bg: 'bg-teal-50', icon: '🦁', name: '英語 English' };
     }
   };
@@ -192,6 +199,9 @@ export default function App() {
   const isWriting = state.currentSubject === 'WRITING';
   const isEnglish = state.currentSubject === 'ENGLISH';
   const isScience = state.currentSubject === 'SCIENCE';
+  const isFinance = state.currentSubject === 'FINANCE';
+  const isAI = state.currentSubject === 'AI';
+
 
   return (
     <div className={`min-h-screen font-sans selection:bg-yellow-200 ${meta.bg}`}>
@@ -255,12 +265,13 @@ export default function App() {
             <div className="text-center mb-12">
               <h2 className="text-5xl font-black text-gray-800 mb-4 tracking-tight">今天想學什麼呢？</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <SubjectCard title="英語 English" subtitle="單字與會話" icon="🦁" color="bg-teal-400" onClick={() => handleSubjectSelect('ENGLISH')} />
               <SubjectCard title="數學 Math" subtitle="加減乘除幾何" icon="📐" color="bg-blue-500" onClick={() => handleSubjectSelect('MATH')} />
               <SubjectCard title="自然 Science" subtitle="觀察實驗原理" icon="🔬" color="bg-green-500" onClick={() => handleSubjectSelect('SCIENCE')} />
               <SubjectCard title="寫作 Writing" subtitle="修辭成語段落" icon="📝" color="bg-pink-400" onClick={() => handleSubjectSelect('WRITING')} />
               <SubjectCard title="理財 Finance" subtitle="儲蓄消費觀念" icon="💰" color="bg-amber-500" onClick={() => handleSubjectSelect('FINANCE')} />
+              <SubjectCard title="AI 智慧 AI" subtitle="探索未來科技" icon="🤖" color="bg-indigo-500" onClick={() => handleSubjectSelect('AI')} />
             </div>
           </div>
         )}
@@ -296,6 +307,7 @@ export default function App() {
         {!state.isLoading && state.gameStatus === 'WRITING_TOPIC_SELECTION' && <WritingTopicSelection grade={state.currentGrade!} onSelectTopic={handleWritingTopicSelect} onBack={() => setState(p => ({ ...p, gameStatus: 'MENU' }))} />}
         {!state.isLoading && state.gameStatus === 'SCIENCE_TOPIC_SELECTION' && <ScienceTopicSelection grade={state.currentGrade!} onSelectTopic={handleScienceTopicSelect} onBack={() => setState(p => ({ ...p, gameStatus: 'MENU' }))} />}
         {!state.isLoading && state.gameStatus === 'FINANCE_TOPIC_SELECTION' && <FinanceTopicSelection grade={state.currentGrade!} onSelectTopic={handleFinanceTopicSelect} onBack={() => setState(p => ({ ...p, gameStatus: 'MENU' }))} />}
+        {!state.isLoading && state.gameStatus === 'AI_TOPIC_SELECTION' && <AITopicSelection grade={state.currentGrade!} onSelectTopic={handleAITopicSelect} onBack={() => setState(p => ({ ...p, gameStatus: 'MENU' }))} />}
 
         {!state.isLoading && state.gameStatus === 'STUDY' && state.lessonData && (
           <StudyMode topic={state.lessonData.topic} chineseTopic={state.lessonData.chineseTopic} vocabulary={state.lessonData.vocabulary} onFinish={() => setState(p => ({ ...p, gameStatus: 'GAME_SELECTION' }))} onExit={resetGame} subject={state.currentSubject!} />

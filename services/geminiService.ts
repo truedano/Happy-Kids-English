@@ -132,6 +132,26 @@ export const generateLessonForGrade = async (
          - 'exampleTranslation': Further explanation of why this is important.
       2. 'quiz': Create exactly ${questionCount} scenario-based MCQs about making financial decisions.
     `;
+  } else if (subject === 'AI') {
+    let aiTopic = specificTopic || "Artificial Intelligence";
+    if (aiTopic === "Surprise Me") {
+      if (grade <= 2) aiTopic = "AI 在生活中的發現";
+      else if (grade <= 4) aiTopic = "機器學習與辨識原理";
+      else aiTopic = "生成式 AI 與科技倫理";
+    }
+
+    subjectPrompt = `
+      Subject: Artificial Intelligence (AI) for Kids. Grade: ${grade}. Topic: "${aiTopic}".
+      ${randomnessDirective}
+      Tasks:
+      1. 'vocabulary': Teach exactly ${questionCount} AI related concepts (e.g., 演算法, 機器學習, 生成式 AI, 提示詞).
+         - 'word': Concept name (Traditional Chinese/English).
+         - 'partOfSpeech': 'AI 觀念'.
+         - 'chinese': Simple, kid-friendly definition explaining what it is.
+         - 'exampleSentence': A sentence OR analogy showing how the AI concept works or is used.
+         - 'exampleTranslation': Easy explanation for children to understand the logic.
+      2. 'quiz': Create exactly ${questionCount} scenario-based MCQs or thinking questions about AI application and safe use.
+    `;
   }
 
   const prompt = `
