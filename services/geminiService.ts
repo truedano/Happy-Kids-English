@@ -112,6 +112,26 @@ export const generateLessonForGrade = async (
          - 'exampleTranslation': Detailed scientific explanation or "Why it happens".
       2. 'quiz': Create EXACTLY ${questionCount} scenario-based MCQs. Vary the scientific problems presented.
     `;
+  } else if (subject === 'FINANCE') {
+    let financeTopic = specificTopic || "Financial Literacy";
+    if (financeTopic === "Surprise Me") {
+      if (grade <= 2) financeTopic = "認識金錢與儲蓄";
+      else if (grade <= 4) financeTopic = "消費選擇與銀行觀念";
+      else financeTopic = "利息、投資與預算管理";
+    }
+
+    subjectPrompt = `
+      Subject: Financial Literacy (Primary School Level). Grade: ${grade}. Topic: "${financeTopic}".
+      ${randomnessDirective}
+      Tasks:
+      1. 'vocabulary': Teach exactly ${questionCount} financial concepts (e.g., 複利, 預算, 想要與需要).
+         - 'word': Concept name (Traditional Chinese).
+         - 'partOfSpeech': '理財觀念'.
+         - 'chinese': Simple, kid-friendly definition.
+         - 'exampleSentence': A sentence showing how the concept is used in daily life.
+         - 'exampleTranslation': Further explanation of why this is important.
+      2. 'quiz': Create exactly ${questionCount} scenario-based MCQs about making financial decisions.
+    `;
   }
 
   const prompt = `

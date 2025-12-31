@@ -8,12 +8,12 @@ export enum GradeLevel {
   SIX = 6
 }
 
-export type Subject = 'ENGLISH' | 'MATH' | 'WRITING' | 'SCIENCE';
+export type Subject = 'ENGLISH' | 'MATH' | 'WRITING' | 'SCIENCE' | 'FINANCE';
 
 export interface VocabularyItem {
-  word: string; // The English word OR Math Term OR Writing Technique OR Scientific Concept
+  word: string; // The English word OR Math Term OR Writing Technique OR Scientific Concept OR Finance Concept
   emoji: string; // Visual cue
-  partOfSpeech: string; // (n.) (v.) OR (Math Category) OR (Scientific Category/Principle)
+  partOfSpeech: string; // (n.) (v.) OR (Math Category) OR (Scientific Category/Principle) OR (Finance Category)
   chinese: string; // Chinese meaning / Explanation
   exampleSentence: string; // Simple example / Formula / Experiment outcome
   exampleTranslation: string; // Translation / Detailed explanation
@@ -35,7 +35,7 @@ export interface WrongAnswer {
 
 export interface LessonData {
   topic: string; // e.g., "At the Zoo" or "Multiplication"
-  chineseTopic: string; 
+  chineseTopic: string;
   vocabulary: VocabularyItem[];
   quiz: QuizItem[];
 }
@@ -45,8 +45,8 @@ export interface AppState {
   currentGrade: GradeLevel | null;
   lessonData: LessonData | null;
   isLoading: boolean;
-  gameStatus: 'MENU' | 'SUBJECT_SELECTION' | 'MATH_TOPIC_SELECTION' | 'ENGLISH_TOPIC_SELECTION' | 'WRITING_TOPIC_SELECTION' | 'SCIENCE_TOPIC_SELECTION' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_WORD_SCRAMBLE' | 'GAME_MATH_CHALLENGE' | 'GAME_NUMBER_PUZZLE' | 'GAME_GEOMETRY_BUILDER' | 'GAME_SENTENCE_BUILDER' | 'GAME_IDIOM_DOJO' | 'GAME_SCIENCE_SORT' | 'GAME_SCIENCE_CYCLE' | 'PLAYING' | 'FINISHED';
+  gameStatus: 'MENU' | 'SUBJECT_SELECTION' | 'MATH_TOPIC_SELECTION' | 'ENGLISH_TOPIC_SELECTION' | 'WRITING_TOPIC_SELECTION' | 'SCIENCE_TOPIC_SELECTION' | 'FINANCE_TOPIC_SELECTION' | 'STUDY' | 'GAME_SELECTION' | 'GAME_MATCHING' | 'GAME_SPELLING' | 'GAME_WORD_SCRAMBLE' | 'GAME_MATH_CHALLENGE' | 'GAME_NUMBER_PUZZLE' | 'GAME_GEOMETRY_BUILDER' | 'GAME_SENTENCE_BUILDER' | 'GAME_IDIOM_DOJO' | 'GAME_SCIENCE_SORT' | 'GAME_SCIENCE_CYCLE' | 'PLAYING' | 'FINISHED';
   score: number;
   currentQuestionIndex: number;
-  wrongAnswers: WrongAnswer[]; 
+  wrongAnswers: WrongAnswer[];
 }
