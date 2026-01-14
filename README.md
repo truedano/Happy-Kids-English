@@ -1,12 +1,12 @@
 # Happy Kids English - 快樂小學堂 🎓
 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/truedano/Happy-Kids-English)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](https://github.com/truedano/Happy-Kids-English)
 [![License](https://img.shields.io/badge/license-Open%20Source-green.svg)](https://github.com/truedano/Happy-Kids-English)
 [![React](https://img.shields.io/badge/React-19.2.0-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2.0-646cff.svg)](https://vitejs.dev/)
 
-> **版本**: 1.4.0 | **最後更新**: 2025-12-31 | **狀態**: ✅ 已部署到 GitHub Pages
+> **版本**: 1.5.0 | **最後更新**: 2026-01-14 | **狀態**: ✅ 已部署到 GitHub Pages
 
 一個互動式、AI 驅動的學習應用程式,專為小學生(1-6 年級)設計,支援英語、數學、寫作、自然科學、理財及 AI 智慧六大科目。
 
@@ -15,6 +15,7 @@
 ### 🎯 核心功能
 - 🤖 **AI 生成內容**: 使用 Google Gemini AI 動態生成適齡教學內容
 - 🔄 **API Key 輪詢 (Round Robin)**: 支援多組 API Key 自動輪替，分散配額壓力
+- ⏳ **API Key 頻率限制 (Rate Limiting)**: 確保每組金鑰每分鐘使用不超過 15 次，自動跳過已達上限的金鑰
 - 🎮 **多樣化遊戲**: 連連看、拼字、數學挑戰、科學分類等 15+ 種互動遊戲
 - ✍️ **自訂主題**: 支援使用者自行輸入想學習的主題，由 AI 即時生成教材
 - 🔒 **隱私與安全**: API Key 採 AES 加密儲存於瀏覽器本機，且不支援介面明文顯示
@@ -116,6 +117,7 @@
 
 - ✅ **安全**：您的 API Key 只儲存在瀏覽器 localStorage，不會傳送到任何伺服器
 - ✅ **輪詢**：支援多組金鑰（Round Robin），自動分散每分鐘請求數（RPM）壓力
+- ✅ **頻率控制**：內建每分鐘 15 次的嚴格頻率限制，防止帳號因過度使用受限
 - ✅ **免費**：使用 Google Gemini 的免費配額（每天 1,500 次請求）
 - ✅ **隱私**：我們不收集任何資料，完全在本機運作
 - ✅ **開源**：程式碼完全透明，可自行檢視
@@ -229,6 +231,11 @@ Happy-Kids-English/
 ## 📊 專案狀態
 
 ### 版本歷程
+- **v1.5.0** (2026-01-14)
+  - ⏳ **新增 API Key 頻率限制 (Rate Limiting)**： 
+    - 實作每組 API Key 每分鐘最高 15 次請求的限制。
+    - 智能輪詢系統會自動跳過當前已達限制的金鑰，優先選擇可用金鑰。
+    - 當所有金鑰皆達限制時，提供友好的繁體中文錯誤提示與倒數等待建議。
 - **v1.4.0** (2025-12-31)
   - 🤖 新增 **AI 智慧 (AI)** 課程：分年級探討 AI 原理、應用與倫理
   - 💰 新增 **理財 (Finance)** 課程：建立兒童財商教育基礎
@@ -320,6 +327,6 @@ Happy-Kids-English/
 [![GitHub stars](https://img.shields.io/github/stars/truedano/Happy-Kids-English?style=social)](https://github.com/truedano/Happy-Kids-English/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/truedano/Happy-Kids-English?style=social)](https://github.com/truedano/Happy-Kids-English/network/members)
 
-**版本 1.4.0** | © 2025 Happy Kids English | [線上體驗](https://truedano.github.io/Happy-Kids-English/)
+**版本 1.5.0** | © 2026 Happy Kids English | [線上體驗](https://truedano.github.io/Happy-Kids-English/)
 
 </div>

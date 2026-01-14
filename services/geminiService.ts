@@ -1,16 +1,19 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 import { GradeLevel, LessonData, Subject } from "../types";
-import { getStoredApiKey } from "./apiKeyManager";
+import { getStoredApiKey, recordUsage, hasApiKey } from "./apiKeyManager";
 
 export const GEMINI_MODEL = 'gemini-3-flash-preview';
 
 const getGeminiClient = () => {
   const apiKey = getStoredApiKey();
   if (!apiKey) {
+    if (hasApiKey()) {
+      throw new Error("所有 API 金鑰皆已達到每分鐘使用限制 (15次)，請稍候一分鐘再試。");
+    }
     throw new Error("API Key 未設定，請先在設定中輸入您的 Gemini API Key");
   }
-  return new GoogleGenAI({ apiKey });
+  return { ai: new GoogleGenAI({ apiKey }), apiKey };
 };
 
 export const generateLessonForGrade = async (
@@ -19,7 +22,7 @@ export const generateLessonForGrade = async (
   questionCount: number = 5,
   specificTopic?: string
 ): Promise<LessonData | null> => {
-  const ai = getGeminiClient();
+  const { ai, apiKey } = getGeminiClient();
 
   let subjectPrompt = "";
 
@@ -162,6 +165,9 @@ export const generateLessonForGrade = async (
   `;
 
   try {
+    // 發送請求前紀錄使用量，以嚴格遵守頻率限制
+    recordUsage(apiKey);
+
     const response = await ai.models.generateContent({
       model: GEMINI_MODEL,
       contents: prompt,

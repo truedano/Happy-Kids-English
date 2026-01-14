@@ -3,6 +3,9 @@ import CryptoJS from 'crypto-js';
 const API_KEY_SINGLE_KEY = 'happy_kids_gemini_api_key'; // 舊有的單一金鑰索引
 const API_KEYS_POOL_KEY = 'happy_kids_gemini_api_keys_pool'; // 金鑰池索引
 const API_KEY_INDEX_KEY = 'happy_kids_gemini_api_key_index'; // 目前輪轉到的索引
+const API_KEY_USAGE_HISTORY_KEY = 'happy_kids_gemini_api_key_usage'; // 使用紀錄
+const MAX_REQUESTS_PER_MINUTE = 15;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 
 // 加密使用的內部密鑰
 const SECRET_KEY = 'happy-kids-learning-app-secure-salt';
@@ -71,22 +74,73 @@ export const saveApiKeyPool = (pool: string[]): boolean => {
 };
 
 /**
- * 實作輪詢 (Round Robin) 取得下一個 API Key
+ * 檢查金鑰是否過度使用 (每分鐘超過 15 次)
+ */
+export const isRateLimited = (apiKey: string): boolean => {
+    try {
+        const usageData = JSON.parse(localStorage.getItem(API_KEY_USAGE_HISTORY_KEY) || '{}');
+        const history = usageData[apiKey] || [];
+        const now = Date.now();
+
+        // 只保留在一分鐘內的紀錄
+        const recentHistory = history.filter((timestamp: number) => now - timestamp < RATE_LIMIT_WINDOW_MS);
+
+        return recentHistory.length >= MAX_REQUESTS_PER_MINUTE;
+    } catch (error) {
+        console.error('檢查 Rate Limit 失敗:', error);
+        return false;
+    }
+};
+
+/**
+ * 紀錄 API Key 的一次使用
+ */
+export const recordUsage = (apiKey: string) => {
+    try {
+        const usageData = JSON.parse(localStorage.getItem(API_KEY_USAGE_HISTORY_KEY) || '{}');
+        const history = usageData[apiKey] || [];
+        const now = Date.now();
+
+        // 清理並更新歷史紀錄
+        const recentHistory = history.filter((timestamp: number) => now - timestamp < RATE_LIMIT_WINDOW_MS);
+        recentHistory.push(now);
+
+        usageData[apiKey] = recentHistory;
+        localStorage.setItem(API_KEY_USAGE_HISTORY_KEY, JSON.stringify(usageData));
+    } catch (error) {
+        console.error('紀錄使用量失敗:', error);
+    }
+};
+
+/**
+ * 實作輪詢 (Round Robin) 取得下一個尚可使用的 API Key
  */
 export const getRotatingApiKey = (): string | null => {
     const pool = getApiKeyPool();
     if (pool.length === 0) return null;
-    if (pool.length === 1) return pool[0];
 
     try {
         const currentIndex = parseInt(localStorage.getItem(API_KEY_INDEX_KEY) || '0', 10);
-        const nextIndex = (currentIndex + 1) % pool.length;
 
-        localStorage.setItem(API_KEY_INDEX_KEY, nextIndex.toString());
+        // 從目前的索引開始嘗試，尋找第一個沒被限制的 Key
+        for (let i = 0; i < pool.length; i++) {
+            const checkIndex = (currentIndex + i) % pool.length;
+            const selectedKey = pool[checkIndex];
 
-        const selectedKey = pool[currentIndex];
-        console.log(`[Round Robin] 使用第 ${currentIndex + 1}/${pool.length} 組金鑰`);
-        return selectedKey;
+            if (!isRateLimited(selectedKey)) {
+                // 更新下一次開始的索引 (下一個)
+                const nextIndex = (checkIndex + 1) % pool.length;
+                localStorage.setItem(API_KEY_INDEX_KEY, nextIndex.toString());
+
+                console.log(`[Round Robin] 使用第 ${checkIndex + 1}/${pool.length} 組金鑰`);
+
+                // 這裡只回傳金鑰，實際使用的 RecordUsage 會在 service 端取得回應時或發送前執行
+                return selectedKey;
+            }
+        }
+
+        console.warn('所有的 API Key 都已達到每分鐘限制 (15次)');
+        return null;
     } catch (error) {
         console.error('輪詢 API Key 失敗:', error);
         return pool[0];
